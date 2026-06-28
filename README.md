@@ -267,3 +267,10 @@ Possible future enhancements include:
 ## License
 
 This project is licensed under the MIT License.
+
+
+## Disclaimer
+
+This script is intended for educational purposes.
+
+Always test security changes in a virtual machine before using them on production systems.
