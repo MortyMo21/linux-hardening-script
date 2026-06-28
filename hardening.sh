@@ -2,7 +2,9 @@
 
 set -Eeuo pipefail
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
+
 readonly CONFIG_FILE="${SCRIPT_DIR}/config.conf"
 readonly BACKUP_DIR="${SCRIPT_DIR}/backups"
 readonly LOG_DIR="${SCRIPT_DIR}/logs"
