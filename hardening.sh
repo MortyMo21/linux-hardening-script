@@ -293,23 +293,19 @@ configure_ssh() {
         "UseDNS" \
         "no"
         
-    if [[ -x /usr/sbin/sshd ]]; then
+    if ! command -v sshd >/dev/null 2>&1; then
+        die "OpenSSH server is not installed."
+    fi
     
-        if /usr/sbin/sshd -t; then
+    if sshd -t; then
     
-            systemctl restart ssh
+        systemctl restart ssh
     
-            success "SSH configuration updated."
-    
-        else
-    
-            die "SSH configuration validation failed."
-    
-        fi
+        success "SSH configuration updated."
     
     else
     
-        die "Unable to locate sshd binary."
+        die "SSH configuration validation failed."
     
     fi
 
@@ -453,29 +449,7 @@ system_summary() {
 
 }
 
-check_requirements() {
 
-    local commands=(
-        apt-get
-        systemctl
-        ufw
-        grep
-        sed
-        cp
-    )
-
-    info "Checking system requirements..."
-
-    for cmd in "${commands[@]}"; do
-        command -v "$cmd" >/dev/null 2>&1 \
-            || die "Required command not found: $cmd"
-    done
-
-    [[ -x /usr/sbin/sshd ]] || die "OpenSSH server binary not found."
-    
-    success "All required commands are available."
-
-}
 
 main() {
 
@@ -487,13 +461,11 @@ main() {
 
     info "Starting Linux hardening..."
 
-    check_requirements
-
-    create_backups
-
     update_system
 
     install_dependencies
+
+    create_backups
 
     configure_ufw
 
@@ -511,9 +483,11 @@ main() {
 
     success "Linux hardening completed."
 
+    echo
+
     echo "Configuration file:"
     echo "  $CONFIG_FILE"
-    
+
     echo
 
     echo "Log file:"
