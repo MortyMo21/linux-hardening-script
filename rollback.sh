@@ -20,7 +20,7 @@ RESET="\e[0m"
 
 print_banner() {
 
-    clear
+    command -v clear >/dev/null && clear
 
     echo "========================================="
     echo "         Rollback Configuration"
@@ -106,10 +106,12 @@ restore_file() {
         warning "Backup not found: $(basename "$backup_file")"
         return
     fi
-
-    cp -p "$backup_file" "$destination"
-
-    success "Restored $(basename "$destination")"
+    
+    if cp -p "$backup_file" "$destination"; then
+        success "Restored $(basename "$destination")"
+    else
+        die "Failed to restore $(basename "$destination")"
+    fi
 
 }
 
