@@ -120,12 +120,25 @@ restore_file() {
 restart_ssh() {
 
     info "Validating SSH configuration..."
-
-    if /usr/sbin/sshd -t; then
-        systemctl restart ssh
-        success "SSH service restarted."
+    
+    if command -v sshd >/dev/null 2>&1; then
+    
+        if sshd -t; then
+    
+            systemctl restart ssh
+    
+            success "SSH configuration updated."
+    
+        else
+    
+            die "SSH configuration validation failed."
+    
+        fi
+    
     else
-        die "SSH configuration is invalid after rollback."
+    
+        die "Unable to locate sshd binary."
+    
     fi
 
 }
