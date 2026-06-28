@@ -220,9 +220,13 @@ configure_ufw() {
     ufw default deny incoming
     ufw default allow outgoing
 
-    ufw status | grep -q "${SSH_PORT}/tcp" || ufw allow "${SSH_PORT}/tcp"
+    if ! ufw status | grep -q "${SSH_PORT}/tcp"; then
+        ufw allow "${SSH_PORT}/tcp"
+    fi
 
-    ufw --force enable
+    if ! ufw status | grep -q "Status: active"; then
+        ufw --force enable
+    fi
 
     success "UFW configured."
 
@@ -291,7 +295,7 @@ configure_ssh() {
         
     if [[ -x /usr/sbin/sshd ]]; then
     
-        if sshd -t; then
+        if /usr/sbin/sshd -t; then
     
             systemctl restart ssh
     
@@ -467,6 +471,7 @@ check_requirements() {
             || die "Required command not found: $cmd"
     done
 
+    [[ -x /usr/sbin/sshd ]] || die "OpenSSH server binary not found."
     
     success "All required commands are available."
 
