@@ -97,6 +97,8 @@ backup_file() {
     
     if [[ ! -f "$backup" ]]; then
         cp -p "$file" "$backup"
+
+        info "Backup created: $(basename "$backup")"
     fi
 
 }
@@ -174,7 +176,7 @@ update_system() {
 
 install_dependencies() {
 
-    info "Installing required packages..."
+    info "Checking required packages..."
 
     local packages=(
         ufw
@@ -182,9 +184,25 @@ install_dependencies() {
         libpam-pwquality
     )
 
-    apt-get install -y "${packages[@]}"
+    local missing=()
 
-    success "Required packages are installed."
+    for package in "${packages[@]}"; do
+        if ! dpkg -s "$package" >/dev/null 2>&1; then
+            missing+=("$package")
+        fi
+    done
+
+    if ((${#missing[@]})); then
+
+        info "Installing missing packages..."
+
+        apt-get install -y "${missing[@]}"
+
+    else
+
+        info "All required packages are already installed."
+
+    fi
 
 }
 
@@ -201,7 +219,7 @@ configure_ufw() {
     ufw default deny incoming
     ufw default allow outgoing
 
-    ufw allow "${SSH_PORT}/tcp"
+    ufw status | grep -q "${SSH_PORT}/tcp" || ufw allow "${SSH_PORT}/tcp"
 
     ufw --force enable
 
@@ -406,7 +424,7 @@ system_summary() {
 
     echo "SSH"
 
-    grep -E "^Port|^PermitRootLogin|^PasswordAuthentication" \
+    grep -E "^[# ]*(Port|PermitRootLogin|PasswordAuthentication)" "$SSH_CONFIG" \
         "$SSH_CONFIG"
 
     echo
@@ -482,8 +500,6 @@ main() {
     echo "Configuration file:"
     echo "  $CONFIG_FILE"
     
-    echo
-
     echo
 
     echo "Log file:"
