@@ -267,7 +267,7 @@ configure_ssh() {
         "UseDNS" \
         "no"
 
-    if sshd -t; then
+    if /usr/sbin/sshd -t; then
 
         systemctl restart ssh
 
@@ -423,7 +423,6 @@ check_requirements() {
     local commands=(
         apt-get
         systemctl
-        sshd
         ufw
         grep
         sed
@@ -437,6 +436,8 @@ check_requirements() {
             || die "Required command not found: $cmd"
     done
 
+    [[ -x /usr/sbin/sshd ]] || die "OpenSSH Server is not installed."
+    
     success "All required commands are available."
 
 }
