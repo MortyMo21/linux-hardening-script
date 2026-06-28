@@ -179,6 +179,7 @@ install_dependencies() {
     info "Checking required packages..."
 
     local packages=(
+        openssh-server
         ufw
         unattended-upgrades
         libpam-pwquality
@@ -288,7 +289,7 @@ configure_ssh() {
         "UseDNS" \
         "no"
         
-    if command -v sshd >/dev/null 2>&1; then
+    if [[ -x /usr/sbin/sshd ]]; then
     
         if sshd -t; then
     
@@ -433,7 +434,7 @@ system_summary() {
 
     echo "SSH"
 
-    grep -E "^[# ]*(Port|PermitRootLogin|PasswordAuthentication)" "$SSH_CONFIG" \
+    grep -E "^[# ]*(Port|PermitRootLogin|PasswordAuthentication)" \
         "$SSH_CONFIG"
 
     echo
@@ -466,10 +467,6 @@ check_requirements() {
             || die "Required command not found: $cmd"
     done
 
-    if ! dpkg -s openssh-server >/dev/null 2>&1; then
-        info "Installing OpenSSH Server..."
-        apt-get install -y openssh-server
-    fi
     
     success "All required commands are available."
 
