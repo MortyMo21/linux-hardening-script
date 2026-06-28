@@ -60,7 +60,10 @@ linux-hardening-script/
 │   └── rollback.md
 │
 └── images/
-    └── demo.png
+    └── hardening demo1.png
+    └── hardening demo 2.png
+    └── hardening demo 3.png
+    └── rollback demo 1.png
 ```
 
 ---
