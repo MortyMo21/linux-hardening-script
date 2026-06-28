@@ -1,0 +1,19 @@
+# Logs
+logs/*.log
+
+# Backups
+backups/*.bak
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Shell history
+.history
