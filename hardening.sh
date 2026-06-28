@@ -22,7 +22,8 @@ BLUE="\e[34m"
 RESET="\e[0m"
 
 print_banner() {
-    clear
+
+    command -v clear >/dev/null && clear
 
     echo "========================================="
     echo "        Linux Hardening Script"
@@ -399,7 +400,7 @@ system_summary() {
 
     echo "Firewall"
 
-    ufw status | head -n 5
+    ufw status verbose
 
     echo
 
@@ -477,6 +478,11 @@ main() {
     echo
 
     success "Linux hardening completed."
+
+    echo "Configuration file:"
+    echo "  $CONFIG_FILE"
+    
+    echo
 
     echo
 
