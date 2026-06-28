@@ -384,7 +384,8 @@ APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 EOF
 
-    systemctl restart unattended-upgrades || true
+    systemctl enable unattended-upgrades >/dev/null 2>&1 || true
+    systemctl restart unattended-upgrades >/dev/null 2>&1 || true
 
     success "Automatic security updates enabled."
 
