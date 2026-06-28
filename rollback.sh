@@ -117,7 +117,7 @@ restart_ssh() {
 
     info "Validating SSH configuration..."
 
-    if sshd -t; then
+    if /usr/sbin/sshd -t; then
         systemctl restart ssh
         success "SSH service restarted."
     else
