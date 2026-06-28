@@ -287,17 +287,25 @@ configure_ssh() {
         "$SSH_CONFIG" \
         "UseDNS" \
         "no"
-
-    if /usr/sbin/sshd -t; then
-
-        systemctl restart ssh
-
-        success "SSH configuration updated."
-
+        
+    if command -v sshd >/dev/null 2>&1; then
+    
+        if sshd -t; then
+    
+            systemctl restart ssh
+    
+            success "SSH configuration updated."
+    
+        else
+    
+            die "SSH configuration validation failed."
+    
+        fi
+    
     else
-
-        die "SSH configuration validation failed."
-
+    
+        die "Unable to locate sshd binary."
+    
     fi
 
 }
@@ -458,7 +466,10 @@ check_requirements() {
             || die "Required command not found: $cmd"
     done
 
-    [[ -x /usr/sbin/sshd ]] || die "OpenSSH Server is not installed."
+    if ! dpkg -s openssh-server >/dev/null 2>&1; then
+        info "Installing OpenSSH Server..."
+        apt-get install -y openssh-server
+    fi
     
     success "All required commands are available."
 
