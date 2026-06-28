@@ -161,6 +161,10 @@ main() {
     success "Rollback completed."
 
     echo
+    echo "Backup directory:"
+    echo "  $BACKUP_DIR"
+    echo
+
 
     echo "Log file:"
     echo "  $LOG_FILE"
