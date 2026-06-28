@@ -91,9 +91,12 @@ backup_file() {
     local file=$1
 
     [[ -f "$file" ]] || return
-
-    cp -p "$file" \
-        "${BACKUP_DIR}/$(basename "$file").bak"
+    
+    local backup="${BACKUP_DIR}/$(basename "$file").bak"
+    
+    if [[ ! -f "$backup" ]]; then
+        cp -p "$file" "$backup"
+    fi
 
 }
 
@@ -193,7 +196,6 @@ configure_ufw() {
 
     info "Configuring UFW..."
 
-    ufw --force reset
 
     ufw default deny incoming
     ufw default allow outgoing
